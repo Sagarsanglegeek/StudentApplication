@@ -50,8 +50,9 @@ namespace StudentApplication
                     //                    </link-entity>
                     //                    </entity>
                     //                    </fetch>";
+                    //= ((Guid)(entity.GetAttributeValue<Guid>("")));
 
-                    Guid courseGuid = Guid.Empty;//= ((Guid)(entity.GetAttributeValue<Guid>("")));
+                    Guid courseGuid = Guid.Empty;
 
                     if(entity.Attributes.Contains("ss_course") && entity.Attributes["ss_course"] !=null)
                     {
@@ -76,15 +77,17 @@ namespace StudentApplication
                         if(entityRecord.Attributes.Contains("ss_semester") && entityRecord.Attributes["ss_semester"] !=null)
                         {
                             sem = (int)entityRecord.Attributes["ss_semester"];
+                            //throw new Exception("Semester invalid number");
                         }
                         break;
                     }
 
-                    for(int i = 0; i<sem; i++)
+                    for(int i = 1; i<=sem; i++)
                     {
-                        Entity semRecord = new Entity("ss_semester");
-                        semRecord["ss_name"] = "Sem" + i;
-                        service.Create(semRecord);
+                        Entity SemesterRecord = new Entity("ss_semester");
+                        SemesterRecord["ss_name"] = "Semester" + i;
+                        SemesterRecord["ss_student"] = new EntityReference("ss_student", entity.Id);
+                        service.Create(SemesterRecord);
                     }
                 }
 
@@ -92,7 +95,7 @@ namespace StudentApplication
             catch (Exception ex)
             {
 
-                throw new InvalidPluginExecutionException();
+                throw new InvalidPluginExecutionException(ex.Message);
             
             }
 
