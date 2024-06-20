@@ -80,6 +80,8 @@ namespace StudentApplication
                             //throw new Exception("Semester invalid number");
                         }
                         break;
+
+
                     }
 
                     for(int i = 1; i<=sem; i++)
@@ -87,11 +89,12 @@ namespace StudentApplication
                         Entity SemesterRecord = new Entity("ss_semester");
                         SemesterRecord["ss_name"] = "Semester" + i;
                         SemesterRecord["ss_student"] = new EntityReference("ss_student", entity.Id);
+                        
                         service.Create(SemesterRecord);
                     }
                 }
-
-            }
+                context.OutputParameters["Output"] = "Compelte";
+           }
             catch (Exception ex)
             {
 
