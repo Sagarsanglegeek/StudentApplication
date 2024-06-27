@@ -99,7 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Workflow\Student_UpdateComputerSemesterRecord.cs" />
-    <Content Include="JavaScript\GetD365Field.js" />
+    <Content Include="JavaScript\GetFieldDataFromD365.js" />
     <Content Include="JavaScript\ss_CallingCustomAction.js" />
     <Compile Include="Plugin\StudentCreateSemesterRecordPost.cs" />
     <Compile Include="Plugin\Student_CreateAutoNumberPre.cs" />
