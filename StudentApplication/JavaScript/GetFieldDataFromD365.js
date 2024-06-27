@@ -1,4 +1,5 @@
-﻿function GetFieldDataFromD365(executionContext) {
+﻿
+function GetFieldDataFromD365(executionContext) {
 
     debugger;
 
@@ -6,7 +7,7 @@
 
     //string
 
-    var title = formContext.getAttribute("ss_title").getValue()
+    let title = formContext.getAttribute("ss_title").getValue()
     var firstName = formContext.getAttribute("ss_name").getValue()
 
     //OptionSet
@@ -35,12 +36,13 @@
     lookopValue[0].entityType = "ss_course"
 
     formContext.getAttribute("ss_course").setValue(lookopValue);
-    CreateRecord(formContext, couseGuid);
+    //CreateRecord(formContext, couseGuid);
+    CreateRecord(formContext, couseGuid, title, firstName, gender, dob);
 }
 
 
 
-function CreateRecord(formContext, couseGuid) {
+function CreateRecord(formContext, couseGuid, title, firstName, gender,dob) {
     // define the data to create new account
     var data =
     {
@@ -70,8 +72,71 @@ function CreateRecord(formContext, couseGuid) {
         }
     );
 
+    //formContext.getAttribute("ss_coursefees").setValue(9000000);
+}
+function UpdateRecord(executionContext) {
+    debugger;
+
+    var formContext = executionContext.getFormContext();
+
+    let course = formContext.getAttribute("ss_course").getValue();
+    if (course != null)
+        let courseId = course[0].id;
+   
+    if (formContext.getAttribute("ss_coursefees").getValue() != null)
+        let courseFees = formContext.getAttribute("ss_coursefees").getValue();
+
+
+        
+
+
+    Xrm.WebApi.retrieveMultipleRecords("ss_student", "?$select=_ss_course_value&$expand=ss_Student_ss_Student_ss_Semester($select=ss_semesterid,_ss_course_value)").then(
+        function success(result) { 
+        console.log(result)
+            for (var i = 0; i < result.entities.length; i++) {
+                console.log(result.entities[i]);
+
+                var semesterGuid = result["ss_semesterid"];
+
+                let semCount = result.entities.length
+                let fees = (courseFees / semCount);
+
+                UpadteRecord(fees, semesterGuid, courseId)
+
+            }
+            // perform additional operations on retrieved records
+        },
+        function (error) {
+            console.log(error.message);
+            // handle error conditions
+        }
+    );
 
 }
+
+function UpdateSemesterRecord(fees, semesterGuid, courseId) {
+    // define the data to update a record
+    var data =
+    {
+        "ss_fees": fees,
+        "ss_course@odata.bind": "/ss_courses(" + courseId + ")"
+        
+    }
+    // update the record
+    Xrm.WebApi.updateRecord("account", semesterGuid, data).then(
+        function success(result) {
+            console.log("Account updated");
+            // perform operations on record update
+        },
+        function (error) {
+            console.log(error.message);
+            // handle error conditions
+        }
+    );
+}
+
+
+
    
 
 
